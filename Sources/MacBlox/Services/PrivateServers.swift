@@ -49,12 +49,48 @@ enum PrivateServers {
             }
             var page = URLComponents(string: "https://www.roblox.com/games/\(resolved.place)")!
             page.queryItems = [URLQueryItem(name: "privateServerLinkCode", value: resolved.invite!.code)]
-            let (data, response) = try await Roblox.request(page.url!.absoluteString, cookie: cookie, accept: "text/html")
-            guard response.statusCode == 200 else { throw Failure("Roblox could not open the private invite (\(response.statusCode)). Check that this account has access.") }
+            let data = try await loadInvitePage(page.url!, place: resolved.place, code: resolved.invite!.code, cookie: cookie)
             resolved.accessCode = try accessCode(html: String(decoding: data, as: UTF8.self), place: resolved.place)
             return resolved
         } catch let error as Failure { throw error }
         catch { throw Failure("Could not resolve the private invite. Check your connection and try again.") }
+    }
+    static func loadInvitePage(_ start: URL, place: String, code: String, cookie: String) async throws -> Data {
+        var url = start
+        var visited = Set<String>()
+        for _ in 0..<6 {
+            guard visited.insert(url.absoluteString).inserted else { throw Failure("Roblox's invite page entered a redirect loop. Try a fresh invite.") }
+            let (data, response) = try await Roblox.request(url.absoluteString, cookie: cookie, accept: "text/html")
+            if response.statusCode == 200 { return data }
+            if [301, 302, 303, 307, 308].contains(response.statusCode) {
+                guard let location = response.value(forHTTPHeaderField: "Location") else { throw Failure("Roblox returned a redirect without a destination.") }
+                url = try redirectURL(location, from: url, place: place, code: code)
+                continue
+            }
+            throw Failure("Roblox could not open the private invite (\(response.statusCode)). Check this account's login and server permissions.")
+        }
+        throw Failure("Roblox redirected the invite too many times. Try again later.")
+    }
+    static func redirectURL(_ location: String, from current: URL, place: String, code: String) throws -> URL {
+        guard let target = URL(string: location, relativeTo: current)?.absoluteURL,
+              var parts = URLComponents(url: target, resolvingAgainstBaseURL: true),
+              parts.scheme == "https", let host = parts.host,
+              ["roblox.com", "www.roblox.com", "web.roblox.com"].contains(host.lowercased()),
+              parts.user == nil, parts.password == nil, parts.port == nil || parts.port == 443 else {
+            throw Failure("Roblox's invite redirect was blocked because it left trusted Roblox HTTPS pages.")
+        }
+        let path = target.pathComponents
+        if path.contains("login") || path.contains("newLogin") { throw Failure("Roblox redirected this account to login. Sign in again before joining the private server.") }
+        guard path.count >= 3, path[1] == "games", path[2] == place else {
+            throw Failure("Roblox redirected away from the requested game. The invite may need account verification or renewed access.")
+        }
+        var query = parts.queryItems ?? []
+        let codes = query.filter { $0.name == "privateServerLinkCode" }
+        guard codes.isEmpty || (codes.count == 1 && codes[0].value == code) else { throw Failure("Roblox redirected to a different private invite. No game was launched.") }
+        if codes.isEmpty { query.append(URLQueryItem(name: "privateServerLinkCode", value: code)) }
+        parts.queryItems = query
+        guard let result = parts.url else { throw Failure("Roblox returned an invalid invite redirect.") }
+        return result
     }
     static func shareDetails(_ data: Data) throws -> (place: String, access: String?, link: String?) {
         guard let root = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { throw Failure("Roblox returned an unreadable invite response.") }

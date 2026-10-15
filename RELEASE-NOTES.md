@@ -1,23 +1,11 @@
-# MacBlox v1.1.0 🔒
+# MacBlox v1.1.1 🔧
 
-private server support is here!
+- fixed private invites failing with HTTP 301 when Roblox redirects to a game's full URL
+- follows trusted Roblox HTTPS game-page redirects while keeping the private invite
+- blocks redirects to other sites, other games, or different invites
+- keeps the actual launch error visible when a queue stops
+- shows the failure reason under the failed account in Queue & activity
 
-- new **Private server** launch mode
-- paste a long private-server link or a newer Roblox share link
-- launch selected alts into the same private server
-- save private invites per account or in destination presets
-- checks each account's access before requesting its game launch
-- no public-server fallback if a private invite can't be resolved
-- existing saved accounts and public-server settings still work
+Quit MacBlox before replacing it. Your saved accounts stay in Keychain.
 
-### how to use
-
-1. choose **Private server** on the Launch tab
-2. paste the Roblox invite link
-3. select your alts and launch
-
-Each alt still needs permission to join. Expired links, full servers, Roblox privacy settings, or changes to Roblox's APIs can prevent joining. Parser/routing checks passed; private-server gameplay hasn't been tested with a live invite yet.
-
-Download **MacBlox-v1.1.0-macOS-AppleSilicon.zip** below. macOS 14+ and Apple Silicon required. Quit MacBlox before replacing the old app. Saved accounts stay in Keychain.
-
-Still an early, ad-hoc-signed release; not Apple-notarized.
+Download **MacBlox-v1.1.1-macOS-AppleSilicon.zip** below. macOS 14+ and Apple Silicon required. Not Apple-notarized. Redirect/parser checks passed; full private-server gameplay still needs a live-account test.

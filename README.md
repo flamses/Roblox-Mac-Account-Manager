@@ -17,7 +17,7 @@
 
 ## how to use
 
-1. grab **MacBlox-v1.1.0-macOS-AppleSilicon.zip** from [releases](https://github.com/flamses/Roblox-Mac-Account-Manager/releases/latest)
+1. grab **MacBlox-v1.1.1-macOS-AppleSilicon.zip** from [releases](https://github.com/flamses/Roblox-Mac-Account-Manager/releases/latest)
 2. unzip it and move **MacBlox** into Applications
 3. have the official **Roblox.app** installed in Applications too
 4. open MacBlox, add your accounts and paste a game link

@@ -55,6 +55,14 @@ enum SelfChecks {
         do { _ = try PrivateServers.accessCode(html: "\"accessCode\":\"\(job)\",\"accessCode\":\"87654321-4321-4321-4321-cba987654321\"", place: "123"); preconditionFailure("Ambiguous private server accepted") } catch {}
         let legacyDestination = try JSONDecoder().decode(Destination.self, from: Data(#"{"place":"123","server":""}"#.utf8))
         precondition(legacyDestination.invite == nil)
-        print("PASS: private invite parsing, private launch routing, share response parsing, denied access handling, saved-data compatibility; process identity/path isolation and kernel PID lookup; destination routing, Job ID validation, FPS edit preservation, profile round-trip. No accounts or Roblox settings accessed.")
+        let redirectStart = URL(string: "https://www.roblox.com/games/123?privateServerLinkCode=12345678")!
+        let canonical = try PrivateServers.redirectURL("/games/123/Test?privateServerLinkCode=12345678", from: redirectStart, place: "123", code: "12345678")
+        precondition(canonical.path == "/games/123/Test")
+        let restoredInvite = try PrivateServers.redirectURL("https://web.roblox.com/games/123/Test", from: redirectStart, place: "123", code: "12345678")
+        precondition(restoredInvite.query?.contains("privateServerLinkCode=12345678") == true)
+        for target in ["https://evil.test/games/123", "https://www.roblox.com.evil.test/games/123", "http://www.roblox.com/games/123", "https://www.roblox.com/login", "/games/999/Test", "/games/123/Test?privateServerLinkCode=different", "https://name:pass@www.roblox.com/games/123"] {
+            do { _ = try PrivateServers.redirectURL(target, from: redirectStart, place: "123", code: "12345678"); preconditionFailure("Unsafe or mismatched redirect accepted") } catch {}
+        }
+        print("PASS: canonical invite redirects, invite preservation, redirect credential isolation; private invite parsing, private launch routing, share response parsing, denied access handling, saved-data compatibility; process identity/path isolation and kernel PID lookup; destination routing, Job ID validation, FPS edit preservation, profile round-trip. No accounts or Roblox settings accessed.")
     }
 }

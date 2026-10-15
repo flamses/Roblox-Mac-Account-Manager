@@ -110,6 +110,7 @@ import AppKit
             let launchDelay = delay, allowErrors = continueOnError, activate = bringToFront
             Task {
                 defer { working = false; Accounts.shared.busy = false; paused = false; refresh() }
+                var lastFailure: String?
                 for index in queue.indices {
                     while paused && !stopRequested { try? await Task.sleep(for: .milliseconds(200)) }
                     if stopRequested { break }
@@ -122,14 +123,16 @@ import AppKit
                         log("Opened \(queue[index].name).")
                     } catch {
                         queue[index].status = "Failed"
-                        log("\(queue[index].name): \(error.localizedDescription)")
+                        queue[index].failure = error.localizedDescription
+                        lastFailure = "\(queue[index].name): \(error.localizedDescription)"
+                        log(lastFailure!)
                         if !allowErrors { stopRequested = true }
                     }
                     refresh()
                     if index < queue.count - 1 && !stopRequested { try? await Task.sleep(for: .seconds(launchDelay)) }
                 }
                 for index in queue.indices where queue[index].status == "Waiting" { queue[index].status = "Cancelled" }
-                if stopRequested { log("Queue stopped. Existing clients were left open.") }
+                if stopRequested { log(lastFailure.map { "Queue stopped — " + $0 } ?? "Queue stopped. Existing clients were left open.") }
                 else { log("Queue finished. \(queue.filter { $0.status == "Client open" }.count) client(s) opened.") }
             }
         } catch { log(error.localizedDescription) }

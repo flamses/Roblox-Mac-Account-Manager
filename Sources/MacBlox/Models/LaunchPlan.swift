@@ -48,6 +48,7 @@ struct QueueRow: Identifiable {
     var name: String
     var destination: Destination
     var status = "Waiting"
+    var failure: String?
 }
 struct ActivityEntry: Identifiable {
     var id = UUID()
