@@ -11,9 +11,9 @@ struct LaunchDashboard: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Picker("Launch mode", selection: $center.mode) { ForEach(LaunchMode.allCases, id: \.self) { Text($0.rawValue).tag($0) } }.pickerStyle(.segmented)
                         if center.mode == .individual {
-                            Text("Each selected account uses its saved game and optional Job ID from Account setup. Assign the same Job ID to a few alts to form a server group.").foregroundStyle(.secondary)
+                            Text("Each selected account uses its saved game or private invite and optional public Job ID from Account setup. Assign the same Job ID to a few alts to form a server group.").foregroundStyle(.secondary)
                         } else {
-                            TextField("Game link or place ID", text: $center.game).textFieldStyle(.roundedBorder)
+                            TextField(center.mode == .privateServer ? "Paste Roblox private-server invite link" : "Game link or place ID", text: $center.game).textFieldStyle(.roundedBorder)
                             if center.mode == .sameServer {
                                 TextField("Public server Job ID (UUID)", text: $center.server).textFieldStyle(.roundedBorder)
                                 HStack {
@@ -30,7 +30,9 @@ struct LaunchDashboard: View {
                                         }.disabled(selected.isEmpty)
                                     }
                                 }
-                                Text("Server availability can change. Full servers or access restrictions can prevent joining. Private-server share links are not supported here.").font(.caption).foregroundStyle(.secondary)
+                                Text("Server availability can change. Full servers or access restrictions can prevent joining. For private invites, choose Private server mode.").font(.caption).foregroundStyle(.secondary)
+                            } else if center.mode == .privateServer {
+                                Text("Accepts /games/…?privateServerLinkCode=… and /share?code=…&type=Server. Each selected account must be allowed to join. Invites are saved with destination presets; keep them private.").font(.caption).foregroundStyle(.secondary)
                             } else { Text("Roblox chooses a server for each account; use Same public server to target one exact server.").font(.caption).foregroundStyle(.secondary) }
                         }
                     }.padding(8)

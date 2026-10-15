@@ -97,6 +97,8 @@ import AppKit
                 else {
                     if mode == .sameServer && server.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { throw Failure("Choose a public server or paste its Job ID to keep the selection together.") }
                     destination = try Destination(game: game, server: mode == .sameServer ? server : "")
+                    if mode == .privateServer && destination.invite == nil { throw Failure("Paste a Roblox private-server invite link in Private server mode.") }
+                    if mode == .sameServer && destination.invite != nil { throw Failure("Use Private server mode for private invites; public Job IDs are separate.") }
                 }
                 rows.append(QueueRow(accountID: account.id, name: name(account), destination: destination))
             }

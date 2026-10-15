@@ -1,21 +1,23 @@
-# MacBlox v1.0.0 🎉
+# MacBlox v1.1.0 🔒
 
-first release! Roblox alts on Mac :)
+private server support is here!
 
-- launch multiple accounts at the same time
-- join the same game, different games, or a specific public server
-- groups, favorites, aliases and notes
-- saved destinations + launch queue controls
-- running client list with focus and close buttons
-- FPS limits with backup and restore
-- custom app icon
+- new **Private server** launch mode
+- paste a long private-server link or a newer Roblox share link
+- launch selected alts into the same private server
+- save private invites per account or in destination presets
+- checks each account's access before requesting its game launch
+- no public-server fallback if a private invite can't be resolved
+- existing saved accounts and public-server settings still work
 
-### download
+### how to use
 
-Download **MacBlox-v1.0.0-macOS-AppleSilicon.zip** below, unzip it and move **MacBlox.app** to Applications.
+1. choose **Private server** on the Launch tab
+2. paste the Roblox invite link
+3. select your alts and launch
 
-- macOS 14 or newer
-- Apple Silicon (M1 or newer)
-- official Roblox.app installed in Applications
+Each alt still needs permission to join. Expired links, full servers, Roblox privacy settings, or changes to Roblox's APIs can prevent joining. Parser/routing checks passed; private-server gameplay hasn't been tested with a live invite yet.
 
-This is an early release and isn't Apple-notarized yet. Bugs can happen, especially after Roblox updates. Private-server share links aren't supported yet. Intel users can build from source.
+Download **MacBlox-v1.1.0-macOS-AppleSilicon.zip** below. macOS 14+ and Apple Silicon required. Quit MacBlox before replacing the old app. Saved accounts stay in Keychain.
+
+Still an early, ad-hoc-signed release; not Apple-notarized.

@@ -30,6 +30,31 @@ enum SelfChecks {
         precondition(ManagedClients.accountID(executable: "/tmp/test-clients/222/Roblox.app/Contents/MacOS/RobloxPlayer", root: clientRoot) == 222)
         precondition(ManagedClients.accountID(executable: "/tmp/test-clients/Roblox.app/Contents/MacOS/RobloxPlayer", root: clientRoot) == 0)
         precondition(ManagedClients.executablePath(getpid()) != nil)
-        print("PASS: process identity/path isolation and kernel PID lookup; destination routing, Job ID validation, FPS edit preservation, profile round-trip. No accounts or Roblox settings accessed.")
+        let privateLink = "https://www.roblox.com/games/123/Test?privateServerLinkCode=123456789012345678901234567890"
+        var privateTarget = try Destination(game: privateLink)
+        precondition(privateTarget.invite?.kind == .long && privateTarget.place == "123")
+        privateTarget.accessCode = job
+        let privateParams = URLComponents(url: privateTarget.launcherURL, resolvingAgainstBaseURL: false)!.queryItems!
+        precondition(privateParams.contains(URLQueryItem(name: "request", value: "RequestPrivateGame")))
+        precondition(privateParams.contains(URLQueryItem(name: "accessCode", value: job)))
+        precondition(privateParams.contains(URLQueryItem(name: "linkCode", value: "123456789012345678901234567890")))
+        let share = try Destination(game: "https://www.roblox.com/share?code=abcdef1234567890&type=Server")
+        precondition(share.invite?.kind == .share)
+        for bad in ["https://www.roblox.com/games/123?privateServerLinkCode", "https://www.roblox.com/games/123?privateServerLinkCode=", "https://roblox.com.evil.test/share?code=abc&type=Server", "https://www.roblox.com/share?code=abc&type=Experience", "https://www.roblox.com/share?code=abc&code=def&type=Server", "https://www.roblox.com/games/123?privateServerLinkCode=bad%2Bcode"] {
+            do { _ = try Destination(game: bad); preconditionFailure("Invalid invite accepted") } catch {}
+        }
+        do { _ = try Destination(game: privateLink, server: job); preconditionFailure("Mixed public/private target accepted") } catch {}
+        let inviteJSON = try JSONSerialization.data(withJSONObject: ["privateServerInviteData": ["placeId": 123, "linkCode": "123456789012345678901234567890"]])
+        let details = try PrivateServers.shareDetails(inviteJSON)
+        precondition(details.place == "123" && details.link == "123456789012345678901234567890")
+        let code = try PrivateServers.accessCode(html: "Roblox.GameLauncher.joinPrivateGame(123, '\(job)')", place: "123")
+        precondition(code == job)
+        let legacyCode = try PrivateServers.accessCode(html: "RobloxLaunch.RequestPrivateGame('PlaceLauncherStatusPanel', 123, '\(job)', null, '1234')", place: "123")
+        precondition(legacyCode == job)
+        do { _ = try PrivateServers.accessCode(html: "<p>Access denied</p>", place: "123"); preconditionFailure("Denied invite accepted") } catch {}
+        do { _ = try PrivateServers.accessCode(html: "\"accessCode\":\"\(job)\",\"accessCode\":\"87654321-4321-4321-4321-cba987654321\"", place: "123"); preconditionFailure("Ambiguous private server accepted") } catch {}
+        let legacyDestination = try JSONDecoder().decode(Destination.self, from: Data(#"{"place":"123","server":""}"#.utf8))
+        precondition(legacyDestination.invite == nil)
+        print("PASS: private invite parsing, private launch routing, share response parsing, denied access handling, saved-data compatibility; process identity/path isolation and kernel PID lookup; destination routing, Job ID validation, FPS edit preservation, profile round-trip. No accounts or Roblox settings accessed.")
     }
 }

@@ -19,14 +19,14 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <key>CFBundleIconFile</key><string>MacBlox</string>
 <key>CFBundleName</key><string>MacBlox</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>1.0.0</string>
+<key>CFBundleShortVersionString</key><string>1.1.0</string>
 <key>LSMinimumSystemVersion</key><string>14.0</string>
 <key>NSCameraUsageDescription</key><string>Roblox login may request camera access for verification.</string>
 </dict></plist>
 PLIST
 codesign --force --sign - "$APP"
 mkdir -p "$PWD/dist"
-ditto -c -k --sequesterRsrc --keepParent "$APP" "$PWD/dist/MacBlox-v1.0.0-macOS-AppleSilicon.zip"
+ditto -c -k --sequesterRsrc --keepParent "$APP" "$PWD/dist/MacBlox-v1.1.0-macOS-AppleSilicon.zip"
 ditto "$APP" "$PWD/dist/MacBlox.app"
 case "$MODE" in
   --build) ;;

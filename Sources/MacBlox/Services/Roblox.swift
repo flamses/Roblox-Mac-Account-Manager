@@ -3,13 +3,13 @@ import Darwin
 import AppKit
 
 enum Roblox {
-    static func request(_ url: String, cookie: String, method: String = "GET", csrf: String? = nil) async throws -> (Data, HTTPURLResponse) {
+    static func request(_ url: String, cookie: String, method: String = "GET", csrf: String? = nil, body: Data? = nil, accept: String = "application/json") async throws -> (Data, HTTPURLResponse) {
         var request = URLRequest(url: URL(string: url)!)
         request.httpMethod = method
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(accept, forHTTPHeaderField: "Accept")
         if method == "POST" {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = Data("{}".utf8)
+            request.httpBody = body ?? Data("{}".utf8)
         }
         request.setValue(".ROBLOSECURITY=\(cookie)", forHTTPHeaderField: "Cookie")
         request.setValue("https://www.roblox.com", forHTTPHeaderField: "Origin")
@@ -95,8 +95,9 @@ actor Launcher {
         try run("/usr/bin/xattr", ["-cr", clone.path])
         try run("/usr/bin/codesign", ["--force", "--sign", "-", "--preserve-metadata=entitlements", clone.path])
         clients = clients.filter { $0.value.isStillManaged }
+        let resolved = try await PrivateServers.resolve(destination, cookie: account.cookie)
         let ticket = try await Roblox.ticket(cookie: account.cookie)
-        let join = destination.launcherURL
+        let join = resolved.launcherURL
         var allowed = CharacterSet.urlQueryAllowed
         allowed.remove(charactersIn: "+&:#%")
         let encoded = join.absoluteString.addingPercentEncoding(withAllowedCharacters: allowed)!

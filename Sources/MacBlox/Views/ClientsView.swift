@@ -28,7 +28,7 @@ struct QueueView: View {
             VStack(alignment: .leading) {
                 Text("Launch queue").font(.headline)
                 List(center.queue) { row in
-                    HStack { Text(center.hideNames ? "Account" : row.name); Spacer(); Text("Place \(row.destination.place)").foregroundStyle(.secondary); Text(row.status).font(.caption.bold()) }
+                    HStack { Text(center.hideNames ? "Account" : row.name); Spacer(); Text(row.destination.invite != nil ? "Private server" : "Place \(row.destination.place)").foregroundStyle(.secondary); Text(row.status).font(.caption.bold()) }
                 }.overlay { if center.queue.isEmpty { Text("Your next launch plan appears here.").foregroundStyle(.secondary) } }
             }.frame(minHeight: 150)
             VStack(alignment: .leading) {

@@ -81,3 +81,7 @@ Live inspection found that Roblox updated a client and restarted it from Clients
 ## 0.2.3 app icon
 
 Added a native blue stacked-tile icon, a complete macOS iconset packaged as Resources/MacBlox.icns, and CFBundleIconFile metadata. The build script copies it before code signing. The editable generator is script/generate_icon.swift. No launcher or account behavior changed.
+
+## v1.1.0 private invites
+
+Private server mode and per-account game fields now accept long Roblox private links and Server share links. Share invites resolve through Roblox sharelinks with the selected account session and CSRF retry. Long links resolve their access UUID from the authenticated game page. Resolution errors stop that account, with no fallback to public matchmaking. Invite links in destination presets and account profiles are stored in local UserDefaults; do not treat those preferences as an encrypted vault. Resolved access codes are kept only for the launch request. No real invite is included in tests, logs, or the repository. The launch path retains existing client isolation/tracking behavior. Tests use synthetic API/HTML responses. Live private gameplay still needs validation with an account that has permission.

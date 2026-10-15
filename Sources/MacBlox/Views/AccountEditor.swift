@@ -16,7 +16,7 @@ struct AccountEditor: View {
                     Text("Edit \(selected.count) accounts together").font(.title2.bold())
                     TextField("Group name", text: $bulkGroup)
                     Button("Assign group to selection") { for account in selected { var p = center.profile(account.id); p.group = bulkGroup; center.profiles[String(account.id)] = p } }
-                    TextField("Game link or place ID", text: $bulkGame)
+                    TextField("Game link, place ID, or private-server invite", text: $bulkGame)
                     TextField("Optional public server Job ID", text: $bulkServer)
                     Button("Assign destination to selection") {
                         do {
@@ -48,9 +48,9 @@ private struct SingleAccountEditor: View {
             Toggle("Favorite account", isOn: $profile.favorite)
             Divider()
             Text("Per-account destination").font(.headline)
-            TextField("Game link or place ID", text: $profile.game)
+            TextField("Game link, place ID, or private-server invite", text: $profile.game)
             TextField("Optional public server Job ID", text: $profile.server)
-            Text("Leave Job ID blank to let Roblox pick a server. These fields are used in Per-account destinations mode.").font(.caption).foregroundStyle(.secondary)
+            Text("Leave Job ID blank for private invites or automatic public matchmaking. These fields are used in Per-account destinations mode.").font(.caption).foregroundStyle(.secondary)
             Text("Notes").font(.headline)
             TextEditor(text: $profile.notes).frame(minHeight: 100).border(.quaternary)
         }
