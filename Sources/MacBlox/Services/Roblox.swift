@@ -25,10 +25,23 @@ enum Roblox {
     }
     static func account(cookie: String) async throws -> Account {
         let (data, response) = try await request("https://users.roblox.com/v1/users/authenticated", cookie: cookie)
-        guard response.statusCode == 200 else { throw Failure("Login expired or unavailable. Sign in again (\(response.statusCode)).") }
+        guard response.statusCode == 200 else { throw sessionFailure(status: response.statusCode, data: data) }
         struct User: Decodable { let id: Int64; let name: String; let displayName: String }
         let user = try JSONDecoder().decode(User.self, from: data)
         return Account(id: user.id, name: user.name, displayName: user.displayName, cookie: cookie)
+    }
+    static func sessionFailure(status: Int, data: Data) -> Failure {
+        struct APIErrors: Decodable {
+            struct Entry: Decodable { var message: String? }
+            var errors: [Entry]
+        }
+        let messages = (try? JSONDecoder().decode(APIErrors.self, from: data))?.errors.compactMap(\.message) ?? []
+        if status == 403 && messages.contains(where: { $0.lowercased() == "user is moderated" }) {
+            return Failure("Roblox reports this account is moderated. Sign in on roblox.com to review the moderation notice. MacBlox cannot launch it while restricted; select another account.")
+        }
+        if status == 401 { return Failure("This account's saved login expired. Add account → sign in to the same account → Save account to refresh it. Your groups and settings stay saved.") }
+        if status == 429 { return Failure("Roblox is rate limiting session checks. Wait a minute and retry.") }
+        return Failure("Roblox could not validate this account's login (\(status)). Open roblox.com to check the account before signing in again.")
     }
     static func ticket(cookie: String) async throws -> String {
         let endpoint = "https://auth.roblox.com/v1/authentication-ticket/"
@@ -76,6 +89,9 @@ actor Launcher {
             ManagedClients.snapshot()[account.id] != nil
         }
         guard !alreadyRunning else { throw Failure("This account already has an open Roblox client.") }
+        // Validate before copying/signing a client so blocked accounts fail quickly and clearly.
+        let verified = try await Roblox.account(cookie: account.cookie)
+        guard verified.id == account.id else { throw Failure("The saved session belongs to a different account. Sign in again to refresh the selected account.") }
         let source = URL(fileURLWithPath: "/Applications/Roblox.app")
         guard FileManager.default.fileExists(atPath: source.path) else { throw Failure("Install Roblox in /Applications first.") }
         let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("MacBlox/Clients", isDirectory: true)

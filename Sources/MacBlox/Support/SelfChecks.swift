@@ -63,6 +63,11 @@ enum SelfChecks {
         for target in ["https://evil.test/games/123", "https://www.roblox.com.evil.test/games/123", "http://www.roblox.com/games/123", "https://www.roblox.com/login", "/games/999/Test", "/games/123/Test?privateServerLinkCode=different", "https://name:pass@www.roblox.com/games/123"] {
             do { _ = try PrivateServers.redirectURL(target, from: redirectStart, place: "123", code: "12345678"); preconditionFailure("Unsafe or mismatched redirect accepted") } catch {}
         }
-        print("PASS: canonical invite redirects, invite preservation, redirect credential isolation; private invite parsing, private launch routing, share response parsing, denied access handling, saved-data compatibility; process identity/path isolation and kernel PID lookup; destination routing, Job ID validation, FPS edit preservation, profile round-trip. No accounts or Roblox settings accessed.")
+        let moderation = Roblox.sessionFailure(status: 403, data: Data(#"{"errors":[{"code":0,"message":"User is moderated"}]}"#.utf8))
+        precondition(moderation.localizedDescription.contains("moderated"))
+        precondition(!moderation.localizedDescription.contains("expired"))
+        precondition(Roblox.sessionFailure(status: 401, data: Data()).localizedDescription.contains("expired"))
+        precondition(!Roblox.sessionFailure(status: 403, data: Data()).localizedDescription.contains("moderated"))
+        print("PASS: moderation vs expired-login diagnostics; canonical invite redirects, invite preservation, redirect credential isolation; private invite parsing, private launch routing, share response parsing, denied access handling, saved-data compatibility; process identity/path isolation and kernel PID lookup; destination routing, Job ID validation, FPS edit preservation, profile round-trip. No accounts or Roblox settings accessed.")
     }
 }
