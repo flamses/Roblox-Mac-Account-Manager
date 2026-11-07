@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b10">
+  <meta name="description" content="Your Roblox alts, together on Mac. Download MacBlox, a simple open-source Roblox account manager for macOS.">
+  <title>MacBlox — Your alts. One home.</title>
+  <link rel="icon" type="image/png" href="assets/macblox.png">
+  <link rel="stylesheet" href="style.css">
+  <script src="site.js" defer></script>
+</head>
+<body>
+<svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+  <symbol id="download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></symbol>
+  <symbol id="github" viewBox="0 0 24 24"><path d="M9 19c-4 1-4-2-6-2m12 5v-4c0-1 .1-2-.5-2.5 4-.5 5.5-2.5 5.5-6A5 5 0 0 0 18.5 6c.2-1 .2-2-.3-3-2 0-3 1-4 1.5a13 13 0 0 0-5 0C8 4 7 3 5 3c-.5 1-.5 2-.3 3A5 5 0 0 0 3 9.5C3 13 4.5 15 8.5 15.5 8 16 8 17 8 18v4"/></symbol>
+  <symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3m1-16a3 3 0 0 1 0 6m3 10v-3a6 6 0 0 0-2-4"/></symbol>
+  <symbol id="route" viewBox="0 0 24 24"><circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="M7 5h9a4 4 0 0 1 0 8H8a3 3 0 0 0 0 6h9"/></symbol>
+  <symbol id="tune" viewBox="0 0 24 24"><path d="M4 7h8m5 0h3M4 17h3m5 0h8"/><circle cx="14.5" cy="7" r="2.5"/><circle cx="9.5" cy="17" r="2.5"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><path d="m9 5 10 7-10 7Z"/></symbol>
+</defs></svg>
+<div class="ambient" aria-hidden="true"></div>
+<header class="nav wrap">
+  <a class="brand" href="./" aria-label="MacBlox home"><img src="assets/macblox.png" width="38" height="38" alt=""><span>MacBlox</span></a>
+  <nav aria-label="Main navigation"><a href="#install">How to install</a><a class="source-link" href="https://github.com/flamses/Roblox-Mac-Account-Manager">GitHub <svg class="icon"><use href="#arrow"/></svg></a></nav>
+</header>
+<main>
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <div class="hero-copy enter">
+      <div class="eyebrow"><span class="status-dot"></span> Made for macOS</div>
+      <h1 id="hero-title">Your alts.<br><span>One home.</span></h1>
+      <p class="intro">All your Roblox accounts, in one little Mac app. Launch together, split into different games, and keep things organized.</p>
+      <a class="button download-link" href="https://github.com/flamses/Roblox-Mac-Account-Manager/releases/download/v1.1.2/MacBlox-v1.1.2-macOS-AppleSilicon.zip"><svg class="icon"><use href="#download"/></svg> Download for Mac <svg class="icon button-arrow"><use href="#arrow"/></svg></a>
+      <p class="requirements">macOS 14+ <span>·</span> Apple Silicon (M1 or newer)</p>
+      <a class="quiet-link" href="https://github.com/flamses/Roblox-Mac-Account-Manager">Free & open source <svg class="icon"><use href="#arrow"/></svg></a>
+    </div>
+    <div class="preview-area enter delay-one">
+      <div class="preview-label"><span>ONE APP. YOUR WHOLE SQUAD.</span><span class="demo-badge">Interactive preview</span></div>
+      <div class="app-preview" aria-label="Illustration of MacBlox launch modes; not connected to Roblox">
+        <div class="window-bar"><div class="traffic" aria-hidden="true"><i></i><i></i><i></i></div><span>MacBlox</span><svg class="icon"><use href="#tune"/></svg></div>
+        <div class="preview-body">
+          <div class="mock-sidebar"><p class="tiny-label">ACCOUNTS <span>03</span></p>
+            <div class="alt active"><div class="avatar">01</div><div>Blue_01<small>Selected</small></div><svg class="icon"><use href="#check"/></svg></div>
+            <div class="alt active"><div class="avatar">02</div><div>Blue_02<small>Selected</small></div><svg class="icon"><use href="#check"/></svg></div>
+            <div class="alt active"><div class="avatar">03</div><div>Blue_03<small>Selected</small></div><svg class="icon"><use href="#check"/></svg></div>
+            <div class="sidebar-bottom"><span class="status-dot"></span> 3 demo accounts</div>
+          </div>
+          <div class="mock-main"><div class="tiny-label">LAUNCH YOUR WAY</div><h2>Better together.</h2>
+            <div class="mode-switch" role="group" aria-label="Preview launch mode"><button class="selected" aria-pressed="true" data-mode="together">Together</button><button aria-pressed="false" data-mode="separate">Separate</button></div>
+            <div class="routes" aria-live="polite"><div><span class="route-line"></span><span>Blue_01</span><b data-game="0">Same server</b></div><div><span class="route-line"></span><span>Blue_02</span><b data-game="1">Same server</b></div><div><span class="route-line"></span><span>Blue_03</span><b data-game="2">Same server</b></div></div>
+            <div class="mock-launch"><svg class="icon"><use href="#play"/></svg> One click. Three alts.</div>
+          </div>
+        </div>
+      </div>
+      <p class="preview-caption">A little preview. The real action happens in the app.</p>
+    </div>
+  </section>
+  <section class="features wrap" aria-label="Features">
+    <article><svg class="icon feature-icon"><use href="#users"/></svg><h2>Bring your alts.</h2><p>Save accounts, make groups, and launch just the ones you want.</p></article>
+    <article><svg class="icon feature-icon"><use href="#route"/></svg><h2>Pick their next stop.</h2><p>Same game, different games, or a public or private server invite.</p></article>
+    <article><svg class="icon feature-icon"><use href="#tune"/></svg><h2>Keep it under control.</h2><p>Queue controls, running clients, and a global FPS preference.</p></article>
+  </section>
+  <section class="install wrap" id="install" aria-labelledby="install-title">
+    <div><div class="eyebrow">UP AND RUNNING</div><h2 id="install-title">A few clicks.<br>Then you’re in.</h2><p>No complicated setup.</p></div>
+    <ol class="steps"><li><span class="step-number">01</span><div><h3>Download & unzip</h3><p>Grab the Mac app using the blue button above.</p></div></li><li><span class="step-number">02</span><div><h3>Drop it in Applications</h3><p>Move MacBlox into Applications. Install the official Roblox app there too.</p></div></li><li><span class="step-number">03</span><div><h3>Add your accounts & play</h3><p>Sign in, paste a game or private invite, and select your alts with Command-click.</p></div></li></ol>
+  </section>
+  <div class="release-note wrap"><svg class="icon"><use href="#github"/></svg><p>Still a little work in progress. This build isn’t Apple-notarized yet. If macOS blocks it, look for <strong>Open Anyway</strong> in Privacy & Security. Only open a copy you trust. <a href="https://github.com/flamses/Roblox-Mac-Account-Manager/releases/latest">Release notes <span aria-hidden="true">↗</span></a></p></div>
+</main>
+<footer class="footer wrap"><div><span class="footer-brand">MacBlox</span><span class="footer-muted">Made by <a href="https://github.com/flamses">flamses</a>. Not affiliated with Roblox.</span></div><a href="https://github.com/flamses/Roblox-Mac-Account-Manager/issues">Found a bug? <svg class="icon"><use href="#arrow"/></svg></a></footer>
+</body>
+</html>
